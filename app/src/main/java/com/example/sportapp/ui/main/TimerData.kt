@@ -2,6 +2,7 @@ package com.example.sportapp.ui.main
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -24,6 +25,7 @@ class TimerData(context: Context) {
         val stopString = sharedPref.getString(STOP_TIME_KEY, null)
         if (stopString != null)
             stopTime = dateFormat.parse(stopString)
+        Log.i("TIMER", "IIIIIIIIIIIIIIIIIIIIIIIIIIIIINIT")
     }
 
 

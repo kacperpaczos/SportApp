@@ -1,41 +1,46 @@
 package com.example.sportapp.ui.main
 
 
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.example.sportapp.R
 import com.example.sportapp.databinding.FragmentStoperBinding
+import org.w3c.dom.Text
 import java.util.*
 
 
-class stoper : Fragment(){
+class Stoper : Fragment(){
 
     lateinit var dataHelper: TimerData
 
     private val timer = Timer()
 
-    private lateinit var pageViewModel: PageViewModel
+    //private lateinit var pageViewModel: PageViewModel
     private var _binding: FragmentStoperBinding? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
 
+    private var buttonStart: Button? = null
+    private var buttonReset: Button? = null
+    private var showTime: TextView? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        Log.i("STARTUJE", "################################################")
         _binding = FragmentStoperBinding.inflate(layoutInflater)
         //setContentView(new stoper(this))
         dataHelper = TimerData(requireContext())
 
 
-        binding.startButton.setOnClickListener{ startStopAction() }
-        binding.resetButton.setOnClickListener{ resetAction() }
+
 
         if(dataHelper.timerCounting())
         {
@@ -47,7 +52,7 @@ class stoper : Fragment(){
             if(dataHelper.startTime() != null && dataHelper.stopTime() != null)
             {
                 val time = Date().time - calcRestartTime().time
-                binding.timeTV.text = timeStringFromLong(time)
+                //showTime!!.text = timeStringFromLong(time)
             }
         }
 
@@ -61,7 +66,35 @@ class stoper : Fragment(){
     ): View? {
 
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_stoper, container, false)
+        val view: View = inflater.inflate(R.layout.fragment_stoper, container, false)
+
+        buttonStart = view.findViewById<View>(R.id.startButton) as Button
+        buttonReset = view.findViewById<View>(R.id.resetButton) as Button
+        showTime = view.findViewById<View>(R.id.timeTV) as TextView
+        buttonStart!!.setOnClickListener {
+            Log.i("CLICK1", "################################################")
+            startStopAction()
+
+        }
+        buttonReset!!.setOnClickListener {
+            Log.i("CLICK2", "################################################")
+            resetAction()
+        }
+        return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        Log.i("CREATED", "################################################")
+        binding.startButton.setOnClickListener{
+            Log.i("CLICK1", "################################################")
+            startStopAction()
+
+        }
+        binding.resetButton.setOnClickListener{
+            Log.i("CLICK2", "################################################")
+            resetAction()
+        }
     }
 
     private inner class TimeTask: TimerTask()
@@ -71,7 +104,7 @@ class stoper : Fragment(){
             if(dataHelper.timerCounting())
             {
                 val time = Date().time - dataHelper.startTime()!!.time
-                binding.timeTV.text = timeStringFromLong(time)
+                showTime!!.text = timeStringFromLong(time)
             }
         }
     }
@@ -81,7 +114,7 @@ class stoper : Fragment(){
         dataHelper.setStopTime(null)
         dataHelper.setStartTime(null)
         stopTimer()
-        binding.timeTV.text = timeStringFromLong(8)
+        showTime!!.text = timeStringFromLong(8)
     }
 
     private fun stopTimer()
